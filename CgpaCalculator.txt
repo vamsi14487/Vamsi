@@ -1,0 +1,53 @@
+import java.util.*;
+
+public class CGPACalculator {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Enter the number of subjects: ");
+        int numSubjects = input.nextInt();
+
+        double totalPoints = 0;
+        double totalCredits = 0;
+
+        for (int i = 1; i <= numSubjects; i++) {
+            System.out.printf("Enter credits for subject %d: ", i);
+            double credits = input.nextDouble();
+
+            System.out.printf("Enter grade for subject %d (O,A+,A,B+,B,C,or F): ", i);
+            String grade = input.next();
+
+            double gradePoints = 0;
+            switch (grade.toUpperCase()) {
+                case "O":
+                    gradePoints = 10;
+                    break;
+                case "A+":
+                    gradePoints = 9;
+                    break;
+                case "A":
+                    gradePoints = 8;
+                    break;
+                case "B+":
+                    gradePoints = 7;
+                    break;
+                case "B":
+                    gradePoints = 6;
+                    break;
+                case "C":
+                    gradePoints = 5;
+                    break;
+                default:
+                    gradePoints = 0;
+                    break;
+            }
+
+            totalPoints += gradePoints * credits;
+            totalCredits += credits;
+        }
+
+        double cgpa = totalPoints / totalCredits;
+
+        System.out.printf("Your CGPA is %.2f", cgpa);
+    }
+}
