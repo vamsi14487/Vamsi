@@ -1,53 +1,69 @@
+                                                 /*CGPA Calculator*/
 import java.util.*;
-
-public class CGPACalculator {
+public class CgpaCalculator {
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
+        int x; 
+        String[] subjects; 
+        int[] credits;
+        double[] attendance; 
+        double[] ca; 
+        double[] mte;
+        double[] ete; 
 
         System.out.print("Enter the number of subjects: ");
-        int numSubjects = input.nextInt();
+        x = sc.nextInt();
 
-        double totalPoints = 0;
-        double totalCredits = 0;
+        subjects = new String[x];
+        credits = new int[x];
+        attendance = new double[x];
+        ca = new double[x];
+        mte = new double[x];
+        ete = new double[x];
 
-        for (int i = 1; i <= numSubjects; i++) {
-            System.out.printf("Enter credits for subject %d: ", i);
-            double credits = input.nextDouble();
-
-            System.out.printf("Enter grade for subject %d (O,A+,A,B+,B,C,or F): ", i);
-            String grade = input.next();
-
-            double gradePoints = 0;
-            switch (grade.toUpperCase()) {
-                case "O":
-                    gradePoints = 10;
-                    break;
-                case "A+":
-                    gradePoints = 9;
-                    break;
-                case "A":
-                    gradePoints = 8;
-                    break;
-                case "B+":
-                    gradePoints = 7;
-                    break;
-                case "B":
-                    gradePoints = 6;
-                    break;
-                case "C":
-                    gradePoints = 5;
-                    break;
-                default:
-                    gradePoints = 0;
-                    break;
-            }
-
-            totalPoints += gradePoints * credits;
-            totalCredits += credits;
+        for (int i = 0; i < x; i++) {
+            System.out.println("Enter details for subject " + (i+1));
+            System.out.print("Course Name: ");
+            subjects[i] = sc.next();
+            System.out.print("Credits: ");
+            credits[i] = sc.nextInt();
+            System.out.print("Attendance (%): ");
+            attendance[i] = sc.nextDouble();
+            System.out.print("CA1 marks (out of 30): ");
+            double ca1 = sc.nextDouble();
+            System.out.print("CA2 marks (out of 30): ");
+            double ca2 = sc.nextDouble();
+            System.out.print("CA3 marks (out of 30): ");
+            double ca3 = sc.nextDouble();
+            ca[i] = (Math.max(ca1, Math.max(ca2, ca3)) * 25) / 30;
+            System.out.print("MTE marks (out of 30): ");
+            mte[i] = (sc.nextDouble() * 20) / 30;
+            System.out.print("ETE marks (out of 70): ");
+            ete[i] = (sc.nextDouble() * 50) / 70;
         }
+        double totalGradePoints = 0;
+        int totalCredits = 0;
 
-        double cgpa = totalPoints / totalCredits;
-
-        System.out.printf("Your CGPA is %.2f", cgpa);
+        for (int i = 0; i < x; i++) {
+            double attendanceMarks = 0;
+            if (attendance[i] >= 90) {
+                attendanceMarks = 5;
+            } else if (attendance[i] >= 85) {
+                attendanceMarks = 4;
+            } else if (attendance[i] >= 80) {
+                attendanceMarks = 3;
+            } else if (attendance[i] >= 75) {
+                attendanceMarks = 2;
+            } else {
+                System.out.println("Reappear in " + subjects[i]);
+                continue;
+            }
+            double subjectGradePoints = attendanceMarks + ca[i] + mte[i] + ete[i];
+            double subjectCredits = credits[i];
+            totalGradePoints += subjectGradePoints * subjectCredits;
+            totalCredits += subjectCredits;
+        }
+        double cgpa = totalGradePoints / totalCredits /10;
+        System.out.println("CGPA: " + cgpa);
     }
 }
