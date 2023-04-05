@@ -1,69 +1,104 @@
-                                                 /*CGPA Calculator*/
 import java.util.*;
+
 public class CgpaCalculator {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int x; 
-        String[] subjects; 
-        int[] credits;
-        double[] attendance; 
-        double[] ca; 
-        double[] mte;
-        double[] ete; 
+        Scanner input = new Scanner(System.in);
+        System.out.println("Welcome to my university");
+        System.out.print("Enter number of subjects: ");
+        int numSubjects = input.nextInt();
 
-        System.out.print("Enter the number of subjects: ");
-        x = sc.nextInt();
+        String[] courseNames = new String[numSubjects];
+        int[] credits = new int[numSubjects];
+        double[] ca1Marks = new double[numSubjects];
+        double[] ca2Marks = new double[numSubjects];
+        double[] ca3Marks = new double[numSubjects];
+        double[] MTEMarks = new double[numSubjects];
+        double[] ETEMarks = new double[numSubjects];
+        double[] Attendance = new double[numSubjects];
 
-        subjects = new String[x];
-        credits = new int[x];
-        attendance = new double[x];
-        ca = new double[x];
-        mte = new double[x];
-        ete = new double[x];
-
-        for (int i = 0; i < x; i++) {
-            System.out.println("Enter details for subject " + (i+1));
-            System.out.print("Course Name: ");
-            subjects[i] = sc.next();
-            System.out.print("Credits: ");
-            credits[i] = sc.nextInt();
-            System.out.print("Attendance (%): ");
-            attendance[i] = sc.nextDouble();
-            System.out.print("CA1 marks (out of 30): ");
-            double ca1 = sc.nextDouble();
-            System.out.print("CA2 marks (out of 30): ");
-            double ca2 = sc.nextDouble();
-            System.out.print("CA3 marks (out of 30): ");
-            double ca3 = sc.nextDouble();
-            ca[i] = (Math.max(ca1, Math.max(ca2, ca3)) * 25) / 30;
-            System.out.print("MTE marks (out of 30): ");
-            mte[i] = (sc.nextDouble() * 20) / 30;
-            System.out.print("ETE marks (out of 70): ");
-            ete[i] = (sc.nextDouble() * 50) / 70;
+        for (int i = 0; i < numSubjects; i++) {
+            System.out.println("\n Enter details for subject " + (i + 1) + ": ");
+            System.out.print("Enter course name: ");
+            courseNames[i] = input.next();
+            System.out.print("Enter number of credits: ");
+            credits[i] = input.nextInt();
+            System.out.print("Enter CA1 marks out of 30: ");
+            ca1Marks[i] = input.nextDouble();
+            System.out.print("Enter CA2 marks out of 30: ");
+            ca2Marks[i] = input.nextDouble();
+            System.out.print("Enter CA3 marks out of 30: ");
+            ca3Marks[i] = input.nextDouble();
+            System.out.print("Enter MTE marks out of 30: ");
+            MTEMarks[i] = input.nextDouble();
+            System.out.print("Enter ETE marks out of 70: ");
+            ETEMarks[i] = input.nextDouble();
+            System.out.print("Enter attendance percentage: ");
+            Attendance[i] = input.nextDouble();
         }
-        double totalGradePoints = 0;
-        int totalCredits = 0;
+        input.close();
+        double[] totalMarks = new double[numSubjects];
+        double[] gradePoints = new double[numSubjects];
+        double[] weightedGradePoints = new double[numSubjects];
 
-        for (int i = 0; i < x; i++) {
+        for (int i = 0; i < numSubjects; i++) {
+            double caMarks = (Math.max(ca1Marks[i], Math.max(ca2Marks[i],(ca3Marks[i]))) / 30) * 25;
+            double MTEWeightage = (MTEMarks[i] / 30) * 20;
+            double ETEWeightage = (ETEMarks[i] / 70) * 50;
             double attendanceMarks = 0;
-            if (attendance[i] >= 90) {
+
+            if (Attendance[i] >= 90) {
                 attendanceMarks = 5;
-            } else if (attendance[i] >= 85) {
+            } else if (Attendance[i] >= 85) {
                 attendanceMarks = 4;
-            } else if (attendance[i] >= 80) {
+            } else if (Attendance[i] >= 80) {
                 attendanceMarks = 3;
-            } else if (attendance[i] >= 75) {
+            } else if (Attendance[i] >= 75) {
                 attendanceMarks = 2;
             } else {
-                System.out.println("Reappear in " + subjects[i]);
+                System.out.println("\nStudent has less than 75% attendance in subject " + (i + 1));
+                System.out.println("Student needs to reappear in this subject");
+                totalMarks[i] = 0;
+                gradePoints[i] = 0;
+                weightedGradePoints[i] = 0;
                 continue;
             }
-            double subjectGradePoints = attendanceMarks + ca[i] + mte[i] + ete[i];
-            double subjectCredits = credits[i];
-            totalGradePoints += subjectGradePoints * subjectCredits;
-            totalCredits += subjectCredits;
+
+            totalMarks[i] = attendanceMarks + caMarks + MTEWeightage + ETEWeightage;
+
+            if (totalMarks[i] >= 91) {
+                gradePoints[i] = 10;
+            } else if (totalMarks[i] >= 82) {
+                gradePoints[i] = 9;
+            } else if (totalMarks[i] >= 73) {
+                gradePoints[i] = 8;
+            } else if (totalMarks[i] >= 64) {
+                gradePoints[i] = 7;
+            } else if (totalMarks[i] >= 55) {
+                gradePoints[i] = 6;
+            } else if (totalMarks[i] >= 46) {
+                gradePoints[i] = 5;
+            } else if (totalMarks[i] >= 35) {
+                gradePoints[i] = 4;
+            } else {
+                gradePoints[i] = 0;
+            }
+
+            weightedGradePoints[i] = gradePoints[i] * credits[i];
         }
-        double cgpa = totalGradePoints / totalCredits /10;
-        System.out.println("CGPA: " + cgpa);
+        double totalCredits = 0;
+        double totalWeightedGradePoints = 0;
+
+        for (int i = 0; i < numSubjects; i++) {
+            if (gradePoints[i] == 0) {
+                continue;
+            }
+
+            totalCredits += credits[i];
+            totalWeightedGradePoints += weightedGradePoints[i];
+        }
+
+        double cgpa = totalWeightedGradePoints / totalCredits;
+        String formatedcgpa=String.format("%.2f",cgpa);
+        System.out.println("\nCGPA: " + formatedcgpa);
     }
 }
